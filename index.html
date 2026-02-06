@@ -44,7 +44,7 @@
 
   p {
     font-size: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     color: #333;
   }
 
@@ -85,6 +85,13 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  #teaseText {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #e63946;
+    min-height: 24px;
+  }
+
   /* Floating hearts */
   .heart {
     position: absolute;
@@ -110,9 +117,8 @@
   <button id="yesBtn">Yes 💖</button>
   <button id="noBtn">No 🙄</button>
 
-  <div id="message">
-    I knew it… Komal, you like me 😏❤️
-  </div>
+  <div id="teaseText"></div>
+  <div id="message">I knew it… Komal, you like me 😏❤️</div>
 </div>
 
 <audio id="bgMusic" src="khat.mp3"></audio>
@@ -122,6 +128,9 @@
   const yesBtn = document.getElementById("yesBtn");
   const msg = document.getElementById("message");
   const music = document.getElementById("bgMusic");
+  const teaseText = document.getElementById("teaseText");
+
+  let noHoverCount = 0;
 
   function moveNoButton() {
     const x = Math.random() * (window.innerWidth - 120);
@@ -132,14 +141,26 @@
 
   moveNoButton();
 
-  noBtn.addEventListener("mouseenter", moveNoButton);
-  noBtn.addEventListener("click", moveNoButton);
+  noBtn.addEventListener("mouseenter", () => {
+    noHoverCount++;
+    teaseText.textContent = "Think one more time 😏";
+
+    if (noHoverCount <= 2) return;
+
+    if (noHoverCount <= 4) {
+      moveNoButton();
+    } else {
+      teaseText.textContent = "Okay… No option removed 😌";
+      noBtn.style.display = "none";
+    }
+  });
 
   yesBtn.addEventListener("click", () => {
     music.play();
     msg.style.display = "block";
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
+    teaseText.textContent = "";
   });
 
   function createHeart() {
@@ -150,7 +171,6 @@
     heart.style.fontSize = (Math.random() * 22 + 16) + "px";
     heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
     document.body.appendChild(heart);
-
     setTimeout(() => heart.remove(), 6000);
   }
 
